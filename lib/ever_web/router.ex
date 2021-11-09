@@ -40,7 +40,7 @@ defmodule EverWeb.Router do
 
     scope "/" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: EverWeb.Telemetry
+      live_dashboard "/dev_dashboard", metrics: EverWeb.Telemetry
     end
   end
 
@@ -77,6 +77,12 @@ defmodule EverWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  end
+
+  scope "/dashboard", EverWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live "/", DashboardLive
   end
 
   scope "/", EverWeb do
