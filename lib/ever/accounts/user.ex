@@ -32,9 +32,26 @@ defmodule Ever.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :name, :username])
     |> validate_email()
+    |> validate_name()
+    |> validate_username()
     |> validate_password(opts)
+  end
+
+  def validate_name(changeset) do
+    changeset
+    |> validate_required([:name])
+    |> validate_length(:username, min: 2, max: 30, message: "at least 2 characters")
+  end
+
+  def validate_username(changeset) do
+    changeset
+    |> validate_required([:username])
+    |> validate_length(:username, min: 2, max: 30, message: "at least 2 characters")
+    |> validate_format(:username, ~r/^[^\s]+$/, message: "must not have no spaces")
+    |> unsafe_validate_unique(:username, Ever.Repo)
+    |> unique_constraint(:username)
   end
 
   defp validate_email(changeset) do
@@ -49,7 +66,8 @@ defmodule Ever.Accounts.User do
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 12, max: 72)
+    |> validate_length(:password, min: 8, max: 72)
+    |> validate_confirmation(:password, message: "does not match password", required: true)
     # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
     # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")

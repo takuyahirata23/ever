@@ -1,26 +1,52 @@
-<h1>Register</h1>
+<section class="max-w-4xl w-11/12 mx-auto">
+  <h2 class="text-center font-medium text-2xl my-8">Register</h2>
 
-<.form let={f} for={@changeset} action={Routes.user_registration_path(@conn, :create)}>
+  <.form let={f} for={@changeset} action={Routes.user_registration_path(@conn, :create)}>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
     </div>
   <% end %>
 
-  <%= label f, :email %>
-  <%= email_input f, :email, required: true %>
-  <%= error_tag f, :email %>
+  <div class="flex flex-col gap-y-6">
+    <div class="flex flex-col gap-y-1.5">
+      <%= label f, :name  %>
+      <%= text_input f, :name, required: true, class: "border border-black rounded-md p-2" %>
+      <%= error_tag f, :name %>
+    </div>
 
-  <%= label f, :password %>
-  <%= password_input f, :password, required: true %>
-  <%= error_tag f, :password %>
+    <div class="flex flex-col gap-y-1.5">
+      <%= label f, :username  %>
+      <%= text_input f, :username, required: true, class: "border border-black rounded-md p-2" %>
+      <%= error_tag f, :username %>
+    </div>
 
-  <div>
-    <%= submit "Register" %>
+    <div class="flex flex-col gap-y-1.5">
+      <%= label f, :email %>
+      <%= email_input f, :email, required: true, class: "border border-black rounded-md p-2" %>
+      <%= error_tag f, :email %>
+    </div>
+
+    <div class="flex flex-col gap-y-1.5">
+      <%= label f, :password  %>
+      <%= password_input f, :password, required: true, class: "border border-black rounded-md p-2" %>
+      <%= error_tag f, :password %>
+    </div>
+
+    <div class="flex flex-col gap-y-1.5">
+      <%= label f, :password_confirmation  %>
+      <%= password_input f, :password_confirmation, required: true, class: "border border-black rounded-md p-2" %>
+      <%= error_tag f, :password_confirmation %>
+    </div>
+
+    <div class="flex justify-center mt-6">
+      <%= submit "Register", class: "w-1/2 p-4 bg-blue-500 rounded-md text-white" %>
+    </div>
   </div>
-</.form>
+  </.form>
 
-<p>
-  <%= link "Log in", to: Routes.user_session_path(@conn, :new) %> |
-  <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new) %>
-</p>
+  <p class="text-center mt-5">
+    <%= link "Log in", to: Routes.user_session_path(@conn, :new) %> |
+    <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new) %>
+  </p>
+</section>
