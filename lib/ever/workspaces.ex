@@ -6,7 +6,7 @@ defmodule Ever.Workspaces do
 
   def create_workspace(attrs) do
     %Workspace{}
-    |> Workspace.workspace_changeset(attrs)
+    |> Workspace.changeset(attrs)
     |> Repo.insert()
   end
 

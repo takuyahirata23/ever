@@ -8,10 +8,11 @@ defmodule Ever.Workspaces.Workspace do
     timestamps()
   end
 
-  def workspace_changeset(workspace, attrs \\ %{}) do
+  def changeset(workspace, attrs \\ %{}) do
     workspace
     |> cast(attrs, [:name])
     |> validate_required([:name])
     |> validate_length(:name, min: 2, max: 30, message: "at least 2 characters")
+    |> unique_constraint(:name)
   end
 end

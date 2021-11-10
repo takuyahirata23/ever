@@ -5,14 +5,14 @@ defmodule EverWeb.SidebarComponent do
   alias Ever.Workspaces
 
   def mount(socket) do
-    workspace_changeset = Workspace.workspace_changeset(%Workspace{})
+    changeset = Workspace.changeset(%Workspace{})
     workspaces = Workspaces.read_workspaces()
 
     {:ok,
      assign(socket,
        show_modal: false,
        workspaces: workspaces,
-       workspace_changeset: workspace_changeset
+       changeset: changeset
      )}
   end
 
@@ -40,7 +40,7 @@ defmodule EverWeb.SidebarComponent do
     </a>
     </div>
     <p class="text-center font-medium text-2xl my-8">Register</p>
-      <.form let={f} for={@workspace_changeset} action="#" phx_submit="submit" phx_target={@myself} %>
+      <.form let={f} for={@changeset} action="#" phx_submit="submit" phx_target={@myself} %>
       <div class="flex flex-col gap-y-6">
         <div class="flex flex-col gap-y-1.5">
           <%= label f, :name  %>
@@ -64,14 +64,13 @@ defmodule EverWeb.SidebarComponent do
   end
 
   def handle_event("submit", %{"workspace" => workspace}, socket) do
-    IO.inspect(socket.assigns.flash)
-
     case Workspaces.create_workspace(workspace) do
       {:error, changeset} ->
         socket =
           socket
           |> put_flash(:error, "Sorry, please try it later.")
           |> assign(changeset: changeset)
+          |> IO.inspect()
 
         {:noreply, socket}
 
