@@ -83,6 +83,7 @@ defmodule EverWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live "/", DashboardLive
+    live "/workspaces/:workspace_id", WorkspaceLive
   end
 
   scope "/", EverWeb do

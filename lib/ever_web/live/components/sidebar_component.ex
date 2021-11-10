@@ -19,11 +19,19 @@ defmodule EverWeb.SidebarComponent do
   def render(assigns) do
     ~H"""
     <aside class="p-6 max-w-xs w-3/12">
-    <h1>Ever</h1>
+    <h1 class="font-bold text-3xl">Ever</h1>
+
+    <h2 class="font-medium text-lg mb-2 mt-6">Workspaces</h2>
+    <ul>
     <%= for workspace <- @workspaces do %>
-      <p><%= workspace.name %></p>
+        <li><%= workspace.name %></li>
       <% end %>
-    <button phx-click="toggle-modal" phx-target={@myself}>Create Workspace</button>
+    </ul>
+    <div class="flex mt-5">
+    <button phx-click="toggle-modal" phx-target={@myself} class="p-2 bg-blue-500 rounded-md text-white text-sm">Create Workspace</button>
+    </div>
+
+
     <%= if @show_modal do %>
     <div class="phx-modal" 
     phx-window-keydown="toggle-modal"
@@ -68,16 +76,13 @@ defmodule EverWeb.SidebarComponent do
       {:error, changeset} ->
         socket =
           socket
-          |> put_flash(:error, "Sorry, please try it later.")
           |> assign(changeset: changeset)
-          |> IO.inspect()
 
         {:noreply, socket}
 
       {:ok, workspace} ->
         socket =
           socket
-          |> put_flash(:info, "#Created {workspace.name}!")
           |> assign(show_modal: false)
           |> update(:workspaces, fn ws -> Enum.concat(ws, [workspace]) end)
 
