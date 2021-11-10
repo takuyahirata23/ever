@@ -73,19 +73,18 @@
   margin: 15vh auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
 }
 
 .phx-modal-close {
   color: #aaa;
-  float: right;
   font-size: 28px;
   font-weight: bold;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
 }
 
 .phx-modal-close:hover,
 .phx-modal-close:focus {
-  color: black;
   text-decoration: none;
-  cursor: pointer;
 }
