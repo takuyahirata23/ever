@@ -24,7 +24,7 @@ defmodule EverWeb.SidebarComponent do
     <h2 class="font-medium text-lg mb-2 mt-6">Workspaces</h2>
     <ul>
     <%= for workspace <- @workspaces do %>
-        <li><%= workspace.name %></li>
+        <li><%= live_redirect workspace.name, to: Routes.live_path(@socket, EverWeb.WorkspaceLive, workspace.id)  %></li>
       <% end %>
     </ul>
     <div class="flex mt-5">

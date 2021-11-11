@@ -13,4 +13,8 @@ defmodule Ever.Workspaces do
   def read_workspaces do
     Repo.all(Workspace)
   end
+
+  def read_workspace(workspace_id) when is_binary(workspace_id) do
+    Repo.get!(Workspace, workspace_id)
+  end
 end
