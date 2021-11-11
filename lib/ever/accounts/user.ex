@@ -2,8 +2,6 @@ defmodule Ever.Accounts.User do
   use Ever.Schema
   import Ecto.Changeset
 
-  alias Ever.Workspaces.Workspace
-
   schema "users" do
     field :email, :string
     field :name, :string
@@ -12,7 +10,8 @@ defmodule Ever.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
 
-    has_many(:workspace, Workspace)
+    has_many(:workspace, Ever.Workspaces.Workspace)
+    has_many(:tasks, Ever.Tasks.Task)
 
     timestamps()
   end
