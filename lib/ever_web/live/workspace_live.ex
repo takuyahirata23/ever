@@ -11,11 +11,11 @@ defmodule EverWeb.WorkspaceLive do
 
   def render(assigns) do
     ~H"""
-        <section>
+    <section>
     <h1 class="font-bold text-3xl">
     <%= @workspace.name %>
     </h1>
-        </section>
+    </section>
     """
   end
 end

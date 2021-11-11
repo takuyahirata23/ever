@@ -10,8 +10,10 @@ defmodule Ever.Workspaces do
     |> Repo.insert()
   end
 
-  def read_workspaces do
-    Repo.all(Workspace)
+  def read_workspaces(manager_id) when is_binary(manager_id) do
+    Workspace
+    |> where([w], w.workspace_manager_id == ^manager_id)
+    |> Repo.all()
   end
 
   def read_workspace(workspace_id) when is_binary(workspace_id) do
