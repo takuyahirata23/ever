@@ -83,9 +83,13 @@ defmodule EverWeb.WorkspaceLive do
         </aside>
         <div class="p-6">
         <%= if Enum.empty?(@workspace.tasks) == false do %>
-        <ul>
+        <ul class="grid grid-cols-2 gap-6">
           <%= for task <- @workspace.tasks do %>
-            <li><%= task.name %></li>
+          <li class="flex flex-col p-6 gap-y-4 rounded-lg shadow border border-gray-300 cursor-pointer">
+          <p class="font-medium text-xl"><%= task.name %></p>
+          <p class="truncate"><%= task.description %></p>
+          <span class="px-2 py-1 bg-blue-500 text-white rounded-md self-end capitalize"><%= task.status %></span>
+          </li>
           <% end %>
         </ul>
         <% else %>
