@@ -17,6 +17,12 @@ defmodule Ever.Workspaces do
   end
 
   def read_workspace(workspace_id) when is_binary(workspace_id) do
-    Repo.get!(Workspace, workspace_id)
+    query =
+      from w in Workspace,
+        where: w.id == ^workspace_id,
+        left_join: t in assoc(w, :tasks),
+        preload: [tasks: t]
+
+    Repo.one(query)
   end
 end

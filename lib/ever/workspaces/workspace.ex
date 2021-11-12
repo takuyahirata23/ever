@@ -7,7 +7,7 @@ defmodule Ever.Workspaces.Workspace do
 
     belongs_to(:workspace_manager, Ever.Accounts.User)
 
-    has_many(:task, Ever.Tasks.Task)
+    has_many(:tasks, Ever.Tasks.Task)
 
     timestamps()
   end
