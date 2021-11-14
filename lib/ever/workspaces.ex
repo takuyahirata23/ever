@@ -20,7 +20,7 @@ defmodule Ever.Workspaces do
     query =
       from w in Workspace,
         where: w.id == ^workspace_id,
-        left_join: t in assoc(w, :tasks),
+        join: t in assoc(w, :tasks),
         preload: [tasks: t]
 
     Repo.one(query)

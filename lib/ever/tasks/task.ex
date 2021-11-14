@@ -17,6 +17,7 @@ defmodule Ever.Tasks.Task do
     task
     |> cast(attrs, [:name, :description, :status, :task_manager_id, :workspace_id])
     |> validate_required([:name, :status, :task_manager_id, :workspace_id])
+    |> validate_length(:name, min: 2)
     |> validate_inclusion(:status, [:todo, :in_progress, :done])
   end
 end

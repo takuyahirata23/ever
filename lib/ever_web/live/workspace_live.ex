@@ -85,12 +85,10 @@ defmodule EverWeb.WorkspaceLive do
         <%= if Enum.empty?(@workspace.tasks) == false do %>
         <ul class="grid grid-cols-2 gap-6">
           <%= for task <- @workspace.tasks do %>
-          <li class="p-6 rounded-lg shadow border border-gray-300 cursor-pointer">
-          <%= live_patch to: Routes.live_path(@socket, EverWeb.TaskLive, @workspace_id,  task.id), class: "flex flex-col gap-y-4" do %>
-          <p class="font-medium text-xl"><%= task.name %></p>
-          <p class="truncate"><%= task.description %></p>
-          <span class="px-2 py-1 bg-blue-500 text-white rounded-md self-end capitalize"><%= task.status %></span>
-          <% end %>
+          <li class="p-6  rounded-lg shadow border border-gray-300 cursor-pointer">
+            <%= live_patch to: Routes.live_path(@socket, EverWeb.TaskLive,  task.workspace_id,  task.id), class: "flex flex-col gap-y-4" do %>
+              <EverWeb.TaskComponent.link_card task={task} />
+            <% end %>
           </li>
           <% end %>
         </ul>
