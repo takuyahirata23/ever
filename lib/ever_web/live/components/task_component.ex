@@ -6,8 +6,11 @@ defmodule EverWeb.TaskComponent do
       <div class="flex flex-col gap-y-4">
         <p class="font-medium text-xl"><%= @task.name %></p>
         <p class="truncate"><%= @task.description %></p>
-        <EverWeb.StatusComponent.status status={@task.status} />
       </div>
     """
   end
 end
+
+# <button phx-click="status-edit">
+#   <EverWeb.StatusComponent.status status={@task.status} />
+# </button>

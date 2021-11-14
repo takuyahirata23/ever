@@ -1,6 +1,7 @@
 defmodule EverWeb.WorkspaceLive do
   use EverWeb, :live_view
 
+  import Ecto.Changeset
   import EverWeb.LiveHelpers
 
   alias Ever.Workspaces
@@ -85,10 +86,20 @@ defmodule EverWeb.WorkspaceLive do
         <%= if Enum.empty?(@workspace.tasks) == false do %>
         <ul class="grid grid-cols-2 gap-6">
           <%= for task <- @workspace.tasks do %>
-          <li class="p-6  rounded-lg shadow border border-gray-300 cursor-pointer">
-            <%= live_patch to: Routes.live_path(@socket, EverWeb.TaskLive,  task.workspace_id,  task.id), class: "flex flex-col gap-y-4" do %>
+          <li class="p-6  rounded-lg shadow border border-gray-300">
+            <%= live_patch to: Routes.live_path(@socket, EverWeb.TaskLive,  task.workspace_id,  task.id), class: "flex flex-col gap-y-4 cursor-pointer" do %>
               <EverWeb.TaskComponent.link_card task={task} />
             <% end %>
+            <div class="flex justify-end mt-5">
+              <form phx-change="status-update">
+                <input name="task_id" value={task.id} type="hidden">
+                <div class="flex flex-col gap-y-1.5 border-b-2 border-blue-500">
+                  <select name="status"  class="pb-1 px-2">
+                    <%= options_for_select(get_status(), task.status)  %>
+                  </select>
+                </div>
+              </form>
+            </div>
           </li>
           <% end %>
         </ul>
@@ -98,6 +109,42 @@ defmodule EverWeb.WorkspaceLive do
         </div>
     </section>
     """
+  end
+
+  def handle_event("status-update", %{"task_id" => task_id, "status" => status}, socket) do
+    case Tasks.update_status(task_id, status) do
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:error, error_changeset} = apply_action(changeset, :update)
+
+        {:noreply, assign(socket, changeset: error_changeset)}
+
+      {:error, message} ->
+        socket =
+          socket
+          |> put_flash(:error, message)
+
+        {:noreply, socket}
+
+      {:ok, task} ->
+        tasks =
+          Enum.map(socket.assigns.workspace.tasks, fn x ->
+            case x.workspace_id == task.id do
+              true -> task
+              false -> x
+            end
+          end)
+
+        workspace = Map.replace(socket.assigns.workspace, :tasks, tasks)
+
+        socket =
+          socket
+          |> put_flash(:info, "Status updated!")
+          |> assign(workspace: workspace)
+
+        {:noreply, socket}
+    end
+
+    {:noreply, socket}
   end
 
   def handle_event("toggle-modal", _, socket) do
@@ -125,6 +172,6 @@ defmodule EverWeb.WorkspaceLive do
   end
 
   defp get_status do
-    [todo: :todo, "in progress": :in_progress, done: :done]
+    [Todo: :todo, "In Progress": :in_progress, Done: :done]
   end
 end

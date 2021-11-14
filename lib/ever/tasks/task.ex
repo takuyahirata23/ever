@@ -20,4 +20,10 @@ defmodule Ever.Tasks.Task do
     |> validate_length(:name, min: 2)
     |> validate_inclusion(:status, [:todo, :in_progress, :done])
   end
+
+  def status_update_changeset(task, attrs) do
+    task
+    |> cast(attrs, [:status])
+    |> validate_inclusion(:status, [:todo, :in_progress, :done])
+  end
 end

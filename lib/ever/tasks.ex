@@ -1,6 +1,5 @@
 defmodule Ever.Tasks do
   import Ecto.Query, warn: false
-  import Ecto.Changeset
 
   alias Ever.Repo
   alias Ever.Tasks.Task
@@ -22,6 +21,21 @@ defmodule Ever.Tasks do
 
       task ->
         changeset = Task.changeset(task, params)
+
+        case changeset.valid? do
+          false -> {:error, changeset}
+          true -> Repo.update(changeset)
+        end
+    end
+  end
+
+  def update_status(task_id, status) when is_binary(task_id) do
+    case read_task(task_id) do
+      nil ->
+        {:error, "Task not found"}
+
+      task ->
+        changeset = Task.status_update_changeset(task, %{status: status})
 
         case changeset.valid? do
           false -> {:error, changeset}
