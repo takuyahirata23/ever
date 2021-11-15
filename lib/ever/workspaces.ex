@@ -3,6 +3,7 @@ defmodule Ever.Workspaces do
 
   alias Ever.Repo
   alias Ever.Workspaces.Workspace
+  alias Ever.Tasks.Task
 
   def create_workspace(attrs) do
     %Workspace{}
@@ -24,5 +25,16 @@ defmodule Ever.Workspaces do
         preload: [tasks: t]
 
     Repo.one(query)
+  end
+
+  def read_workspace_stats(manager_id) when is_binary(manager_id) do
+    query =
+      from t in Task,
+        where: t.task_manager_id == ^manager_id,
+        group_by: [t.status],
+        order_by: [desc: t.status],
+        select: %{count: count(t.status), status: t.status}
+
+    Repo.all(query)
   end
 end

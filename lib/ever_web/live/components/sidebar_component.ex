@@ -22,7 +22,7 @@ defmodule EverWeb.SidebarComponent do
 
   def render(assigns) do
     ~H"""
-      <aside class="p-6 max-w-xs w-3/12">
+      <aside class="p-6 max-w-xs w-4/12">
         <h1 class="font-bold text-3xl">Ever</h1>
         <h2 class="font-medium text-lg mb-2 mt-6">Workspaces</h2>
         <ul>

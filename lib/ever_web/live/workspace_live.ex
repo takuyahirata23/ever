@@ -7,6 +7,7 @@ defmodule EverWeb.WorkspaceLive do
   alias Ever.Workspaces
   alias Ever.Tasks
   alias Ever.Tasks.Task
+  alias EverWeb.LiveHelpers
 
   def mount(%{"workspace_id" => id}, session, socket) do
     socket = assign_current_user(socket, session)
@@ -26,14 +27,15 @@ defmodule EverWeb.WorkspaceLive do
   def render(assigns) do
     ~H"""
     <section class="flex">
-    <aside class="p-6 max-w-xs w-3/12" >
-    <h1 class="font-bold text-3xl">
+    <aside class="p-8 max-w-xs w-3/12" >
+    <%= live_patch "<- Back", to: Routes.live_path(@socket, EverWeb.DashboardLive) %>
+    <h1 class="font-bold text-3xl mt-4">
     <%= @workspace.name %>
     </h1>
     <div>
     <button 
     phx-click="toggle-modal" 
-    class="p-2 bg-blue-500 rounded-md text-white text-sm"
+    class="py-2 px-4 bg-blue-500 rounded-md text-white text-sm block mt-4"
     >
     Create Task
     </button>
@@ -51,7 +53,7 @@ defmodule EverWeb.WorkspaceLive do
                 </a>
               </div>
               <div>
-              <p class="text-center font-medium text-2xl my-8">Task</p>
+              <p class="text-center font-medium text-2xl my-6 ">Create Task</p>
               <.form let={f} for={@task_changeset} action="#" phx_submit="submit" %>
                 <div class="flex flex-col gap-y-6">
                   <div class="flex flex-col gap-y-1.5">
@@ -61,10 +63,11 @@ defmodule EverWeb.WorkspaceLive do
                   </div>
                   <div class="flex flex-col gap-y-1.5">
                     <%= label f, :description  %>
-                    <%= text_input f, :description, 
+                    <%= textarea f, :description, 
                       required: true, 
                       class: "border border-black rounded-md p-2",
-                      autocomplete: "off"
+                      autocomplete: "off",
+                      rows: 4
                     %>
                     <%= error_tag f, :description %>
                   </div>
@@ -82,7 +85,7 @@ defmodule EverWeb.WorkspaceLive do
           </div>
         <% end %>
         </aside>
-        <div class="p-6">
+        <div class="p-8">
         <%= if Enum.empty?(@workspace.tasks) == false do %>
         <ul class="grid grid-cols-2 gap-6">
           <%= for task <- @workspace.tasks do %>
@@ -90,15 +93,18 @@ defmodule EverWeb.WorkspaceLive do
             <%= live_patch to: Routes.live_path(@socket, EverWeb.TaskLive,  task.workspace_id,  task.id), class: "flex flex-col gap-y-4 cursor-pointer" do %>
               <EverWeb.TaskComponent.link_card task={task} />
             <% end %>
-            <div class="flex justify-end mt-5">
-              <form phx-change="status-update">
-                <input name="task_id" value={task.id} type="hidden">
-                <div class="flex flex-col gap-y-1.5 border-b-2 border-blue-500">
-                  <select name="status"  class="pb-1 px-2">
-                    <%= options_for_select(get_status(), task.status)  %>
-                  </select>
-                </div>
-              </form>
+            <div class="mt-5 flex justify-between items-center">
+              <span class="text-sm">Crated at <%= LiveHelpers.format_time(task.inserted_at) %></span>
+              <div class="flex justify-end">
+                <form phx-change="status-update">
+                  <input name="task_id" value={task.id} type="hidden">
+                  <div class="flex flex-col gap-y-1.5 border-b-2 border-blue-500">
+                    <select name="status"  class="pb-1 px-2">
+                      <%= options_for_select(get_status(), task.status)  %>
+                    </select>
+                  </div>
+                </form>
+              </div>
             </div>
           </li>
           <% end %>

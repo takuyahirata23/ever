@@ -10,7 +10,7 @@ defmodule EverWeb.LiveHelpers do
     end)
   end
 
-  def format(time) do
+  def format_time(time) do
     case Timex.format(time, "%Y-%m-%d", :strftime) do
       {:error, _} -> "N/A"
       {:ok, time} -> time

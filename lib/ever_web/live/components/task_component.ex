@@ -10,7 +10,3 @@ defmodule EverWeb.TaskComponent do
     """
   end
 end
-
-# <button phx-click="status-edit">
-#   <EverWeb.StatusComponent.status status={@task.status} />
-# </button>

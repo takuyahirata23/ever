@@ -23,7 +23,7 @@ defmodule EverWeb.TaskLive do
           <EverWeb.HeaderComponent.header current_user={@current_user} />
         <div class="py-6">
           <div class="flex justify-between">
-            <h2 class="text-1xl"><%= @task.name %></h2>
+            <h2 class="text-2xl"><%= @task.name %></h2>
             <EverWeb.StatusComponent.status status={@task.status} />
           </div>
           <p class="mt-6"><%= @task.description %></p>
@@ -55,10 +55,11 @@ defmodule EverWeb.TaskLive do
                   </div>
                   <div class="flex flex-col gap-y-1.5">
                     <%= label f, :description  %>
-                    <%= text_input f, :description, 
+                    <%= textarea f, :description, 
                       required: true, 
                       class: "border border-black rounded-md p-2",
-                      autocomplete: "off"
+                      autocomplete: "off",
+                      rows: 4
                     %>
                     <%= error_tag f, :description %>
                   </div>

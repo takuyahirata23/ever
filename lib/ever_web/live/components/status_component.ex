@@ -9,6 +9,15 @@ defmodule EverWeb.StatusComponent do
     """
   end
 
+  def status_count(assigns) do
+    ~H"""
+      <li class="p-6 flex flex-col gap-y-5 items-center rounded-lg shadow border border-gray-300">
+        <span class="text-xl font-medium"><%= status_to_string(@status.status) %></span>
+        <span class="text-lg font-medium"><%= @status.count %></span>
+      </li>
+    """
+  end
+
   defp get_status_color(status) do
     case status do
       :todo -> "bg-yellow-500"
