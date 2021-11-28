@@ -85,6 +85,7 @@ defmodule EverWeb.Router do
     live "/", DashboardLive
     live "/workspaces/:workspace_id", WorkspaceLive
     live "/workspaces/:workspace_id/task/:task_id", TaskLive
+    live "/workspaces/:workspace_id/invite", WorkspaceInviteLive
   end
 
   scope "/", EverWeb do

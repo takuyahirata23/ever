@@ -2,7 +2,7 @@ defmodule Ever.Workspaces do
   import Ecto.Query, warn: false
 
   alias Ever.Repo
-  alias Ever.Workspaces.Workspace
+  alias Ever.Workspaces.{Workspace, WorkspaceInvite}
   alias Ever.Tasks.Task
 
   def create_workspace(attrs) do
@@ -36,5 +36,11 @@ defmodule Ever.Workspaces do
         select: %{count: count(t.status), status: t.status}
 
     Repo.all(query)
+  end
+
+  def create_workspace_invite(attrs) do
+    %WorkspaceInvite{}
+    |> WorkspaceInvite.changeset(attrs)
+    |> Repo.insert()
   end
 end
