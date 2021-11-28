@@ -7,6 +7,7 @@ defmodule Ever.Accounts do
   alias Ever.Repo
 
   alias Ever.Accounts.{User, UserToken, UserNotifier}
+  alias Ever.Guardian
 
   ## Database getters
 
@@ -346,5 +347,36 @@ defmodule Ever.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  @doc """
+  Authentication for GraphQL 
+  """
+  def generate_graphql_user_token(email, password) do
+    case get_user_by_email_and_password(email, password) do
+      nil ->
+        {:error, :unauthorized}
+
+      user ->
+        {:ok, token, _claims} = Guardian.encode_and_sign(user)
+        {:ok, %{token: token, user: user}}
+    end
+  end
+
+  ## Verify web token for GraphQL 
+  def find_user_by_web_token(token) do
+    with {:ok, claim} = Guardian.decode_and_verify(token),
+         user when not is_nil(user) <- get_user!(claim["sub"]) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  @doc """
+  GraphQL CRUD
+  """
+  def read_users do
+    Repo.all(User)
   end
 end

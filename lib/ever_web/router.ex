@@ -3,6 +3,8 @@ defmodule EverWeb.Router do
 
   import EverWeb.UserAuth
 
+  alias EverWeb.Pipelines.ApiAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -15,6 +17,18 @@ defmodule EverWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :graphql do
+    plug EverWeb.Context
+  end
+
+  pipeline :api_auth do
+    plug ApiAuth
+  end
+
+  pipeline :ensure_api_auth do
+    plug(Guardian.Plug.EnsureAuthenticated, claims: %{"typ" => "access"})
   end
 
   scope "/", EverWeb do
@@ -96,5 +110,21 @@ defmodule EverWeb.Router do
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
+  end
+
+  # scope "/api" do
+  # enAd
+
+  scope "/" do
+    pipe_through [:graphql, :api_auth, :ensure_api_auth]
+    forward "/graphql", Absinthe.Plug, schema: EverWeb.Schema
+  end
+
+  scope "/" do
+    pipe_through [:graphql]
+
+    if Mix.env() == :dev do
+      forward "/graphiql", Absinthe.Plug.GraphiQL, schema: EverWeb.Schema
+    end
   end
 end

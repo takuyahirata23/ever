@@ -52,3 +52,7 @@ config :phoenix, :json_library, Jason
 import_config "#{config_env()}.exs"
 
 config :ever, Ever.Repo, migration_primary_key: [type: :uuid]
+
+config :ever, Ever.Guardian,
+  issuer: "ever",
+  secret_key: "hello"
