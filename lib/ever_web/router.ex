@@ -3,6 +3,7 @@ defmodule EverWeb.Router do
 
   import EverWeb.UserAuth
 
+  alias EverWeb.Policies
   alias EverWeb.Pipelines.ApiAuth
 
   pipeline :browser do
@@ -27,15 +28,15 @@ defmodule EverWeb.Router do
     plug ApiAuth
   end
 
-  pipeline :ensure_api_auth do
-    plug(Guardian.Plug.EnsureAuthenticated, claims: %{"typ" => "access"})
+  pipeline :admin do
+    plug(Policies, :is_admin)
   end
 
-  scope "/", EverWeb do
-    pipe_through :browser
+  # scope "/", EverWeb do
+  #   pipe_through :browser
 
-    get "/", PageController, :index
-  end
+  #   get "/", PageController, :index
+  # end
 
   # Other scopes may use custom stacks.
   # scope "/api", EverWeb do
@@ -70,8 +71,6 @@ defmodule EverWeb.Router do
     end
   end
 
-  ## Authentication routes
-
   scope "/", EverWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
@@ -85,22 +84,22 @@ defmodule EverWeb.Router do
     put "/users/reset_password/:token", UserResetPasswordController, :update
   end
 
-  scope "/", EverWeb do
-    pipe_through [:browser, :require_authenticated_user]
+  # scope "/", EverWeb do
+  #   pipe_through [:browser, :require_authenticated_user]
 
-    get "/users/settings", UserSettingsController, :edit
-    put "/users/settings", UserSettingsController, :update
-    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
-  end
+  #   get "/users/settings", UserSettingsController, :edit
+  #   put "/users/settings", UserSettingsController, :update
+  #   get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  # end
 
-  scope "/dashboard", EverWeb do
-    pipe_through [:browser, :require_authenticated_user]
+  # scope "/dashboard", EverWeb do
+  #   pipe_through [:browser, :require_authenticated_user]
 
-    live "/", DashboardLive
-    live "/workspaces/:workspace_id", WorkspaceLive
-    live "/workspaces/:workspace_id/task/:task_id", TaskLive
-    live "/workspaces/:workspace_id/invite", WorkspaceInviteLive
-  end
+  #   live "/", DashboardLive
+  #   live "/workspaces/:workspace_id", WorkspaceLive
+  #   live "/workspaces/:workspace_id/task/:task_id", TaskLive
+  #   live "/workspaces/:workspace_id/invite", WorkspaceInviteLive
+  # end
 
   scope "/", EverWeb do
     pipe_through [:browser]
@@ -113,10 +112,11 @@ defmodule EverWeb.Router do
   end
 
   # scope "/api" do
-  # enAd
+  # end
+  #
 
   scope "/" do
-    pipe_through [:graphql, :api_auth, :ensure_api_auth]
+    pipe_through [:graphql, :api_auth]
     forward "/graphql", Absinthe.Plug, schema: EverWeb.Schema
   end
 
@@ -126,5 +126,11 @@ defmodule EverWeb.Router do
     if Mix.env() == :dev do
       forward "/graphiql", Absinthe.Plug.GraphiQL, schema: EverWeb.Schema
     end
+  end
+
+  scope "/admin", EverWeb.Admin, as: :admin do
+    pipe_through [:browser, :require_authenticated_user, :admin]
+
+    live "/", DashboardLive
   end
 end

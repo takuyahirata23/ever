@@ -53,7 +53,8 @@ defmodule Ever.MixProject do
       {:timex, "~> 3.0"},
       {:absinthe, "~> 1.6"},
       {:absinthe_plug, "~> 1.5"},
-      {:guardian, "~> 2.2"}
+      {:guardian, "~> 2.2"},
+      {:policy_wonk, "~> 1.0"}
     ]
   end
 
